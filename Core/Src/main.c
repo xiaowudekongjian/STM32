@@ -67,7 +67,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+	HSVColor HSV ={0,1,1};
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -98,8 +98,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  RGB_Show_64();
-	  HAL_Delay(1000);
+	  PWM_WS2812B_Rainbow(&HSV);
+//	  PWM_WS2812B_Gradual(&HSV);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

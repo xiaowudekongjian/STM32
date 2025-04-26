@@ -1,9 +1,89 @@
 #include "WS2812B.h"
 #include "stdlib.h"
+#include <math.h>
+
 uint32_t WS2812B_BUFF[LED_NUM+1][24];
 
 
 
+
+// RGB转HSV函数
+HSVColor rgb_to_hsv(RGBColor rgb) {
+    HSVColor hsv;
+    float r = rgb.r / 255.0f;
+    float g = rgb.g / 255.0f;
+    float b = rgb.b / 255.0f;
+
+    float max = fmaxf(r, fmaxf(g, b));
+    float min = fminf(r, fminf(g, b));
+    float delta = max - min;
+
+    // 计算明度 (Value)
+    hsv.v = max;
+
+    // 处理灰度色（无颜色）
+    if (delta < 0.00001f) {
+        hsv.h = 0.0f;
+        hsv.s = 0.0f;
+        return hsv;
+    }
+
+    // 计算饱和度 (Saturation)
+    hsv.s = delta / max;
+
+    // 计算色相 (Hue)
+    if (r >= max) {
+        hsv.h = (g - b) / delta;         // 黄色到品红之间
+    } else if (g >= max) {
+        hsv.h = 2.0f + (b - r) / delta;  // 青色到黄色之间
+    } else {
+        hsv.h = 4.0f + (r - g) / delta;  // 品红到青色之间
+    }
+
+    hsv.h *= 60.0f; // 转换为度数
+    if (hsv.h < 0.0f) hsv.h += 360.0f; // 确保角度非负
+
+    return hsv;
+}
+
+// HSV转RGB函数
+RGBColor hsv_to_rgb(HSVColor hsv) {
+    RGBColor rgb;
+    float c = hsv.v * hsv.s; // 色度
+    float x = c * (1.0f - fabsf(fmodf(hsv.h / 60.0f, 2.0f) - 1.0f));
+    float m = hsv.v - c;
+
+    float r, g, b;
+
+    // 根据色相区间计算
+    if (hsv.h < 60.0f) {
+        r = c; g = x; b = 0;
+    } else if (hsv.h < 120.0f) {
+        r = x; g = c; b = 0;
+    } else if (hsv.h < 180.0f) {
+        r = 0; g = c; b = x;
+    } else if (hsv.h < 240.0f) {
+        r = 0; g = x; b = c;
+    } else if (hsv.h < 300.0f) {
+        r = x; g = 0; b = c;
+    } else {
+        r = c; g = 0; b = x;
+    }
+
+    // 添加明度偏移并转换为0-255
+    rgb.r = (unsigned char)((r + m) * 255.0f);
+    rgb.g = (unsigned char)((g + m) * 255.0f);
+    rgb.b = (unsigned char)((b + m) * 255.0f);
+
+    return rgb;
+}
+
+uint32_t rgb_to_int(RGBColor rgb)
+{
+	uint32_t color = 0;
+	color = (rgb.r << 16) | (rgb.g << 16) | (rgb.b);
+	return color;
+}
 void PWM_WS2812B_Init()
 {
 	WS2812B_Buf_Clear();
@@ -63,7 +143,32 @@ void PWM_WS2812B_Blue(uint16_t num)
 {
 
 }
+void PWM_WS2812B_Gradual(HSVColor* HSV)
+{
+	  Color_Gradual(HSV,0.3);
+	  WS2812B_Buf_Clear();
+	  WS2812B_Set_Color(0,60,rgb_to_int(hsv_to_rgb(*HSV)));
+	  PWM_WS2812B_Refresh();
+//	  RGB_Show_64();
+	  HAL_Delay(20);
+}
+void PWM_WS2812B_Rainbow(HSVColor* HSV)
+{
+	uint16_t i = 0,j = 0;
+	for (i = LED_NUM; i > 0; i--)
+	{
+	  for (j = 0; j < 24; j++)
+	  	{
+	  		WS2812B_BUFF[i][j] = WS2812B_BUFF[i-1][j];
+	  	}
+	}
 
+	  Color_Gradual(HSV,7);
+	  WS2812B_Set_Color(0,1,rgb_to_int(hsv_to_rgb(*HSV)));
+	  PWM_WS2812B_Refresh();
+//	  RGB_Show_64();
+	  HAL_Delay(20);
+}
 void RGB_Show_64(void)
 {
 	WS2812B_Buf_Clear();
@@ -74,5 +179,29 @@ void RGB_Show_64(void)
 
 	PWM_WS2812B_Refresh();
 }
+
+
+void Color_Gradual(HSVColor* Color,float step)
+{
+	if(Color->h < 360)
+	{
+		Color->h += step;
+	}
+	else
+	{
+		Color->h = fmod(Color->h, 360);
+	}
+//	if(Color->v < 1)
+//	{
+//		Color->v += 0.002;
+//	}
+//	else
+//	{
+//		Color->v = 0;
+//	}
+}
+
+
+
 
 
