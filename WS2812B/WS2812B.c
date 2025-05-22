@@ -149,7 +149,7 @@ void PWM_WS2812B_Blue(uint16_t num)
 }
 void PWM_WS2812B_Gradual(HSVColor* HSV)
 {
-	  Color_Gradual(HSV,0.3);
+	  Color_Gradual(HSV,0.1);
 	  WS2812B_Buf_Clear();
 	  WS2812B_Set_Color(0,LED_NUM,rgb_to_int(hsv_to_rgb(*HSV)));
 	  PWM_WS2812B_Refresh();
@@ -178,15 +178,8 @@ void PWM_WS2812B_Rainbow(HSVColor* HSV)
 
 void Color_Gradual(HSVColor* Color,float step)
 {
-	if(Color->h < 360)
-	{
-		Color->h += step;
-	}
-	else
-	{
-		Color->h = fmod(Color->h, 360);
-	}
 
+		Color->h = fmod((Color->h + step), 360);
 }
 
 
