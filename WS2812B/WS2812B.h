@@ -33,8 +33,10 @@ typedef struct {
 #define T1H 60						//1编码高电平时间占2/3
 
 /* 灯珠亮的个数 */
-#define LED_NUM  150		//底层驱动未用，为应用方便，先加上
+#define LED_NUM  60
+#define RESET_NUM 1
 #define DATA_SIZE  24 	    //WS2812B一个编码的bit数，3*8
+
 
 void PWM_WS2812B_Init();
 void WS2812B_Reset(void);

@@ -1,6 +1,6 @@
 ################################################################################
 # 自动生成的文件。不要编辑！
-# Toolchain: GNU Tools for STM32 (12.3.rel1)
+# Toolchain: GNU Tools for STM32 (13.3.rel1)
 ################################################################################
 
 -include ../makefile.init
@@ -35,34 +35,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := WS2812B
+BUILD_ARTIFACT_NAME := ws2812b
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # 将这些工具调用的输入和输出添加到构建变量 
 EXECUTABLES += \
-WS2812B.elf \
+ws2812b.elf \
 
 MAP_FILES += \
-WS2812B.map \
+ws2812b.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-WS2812B.list \
+ws2812b.list \
 
 
 # 所有目标
 all: main-build
 
 # 主构建目标
-main-build: WS2812B.elf secondary-outputs
+main-build: ws2812b.elf secondary-outputs
 
 # 工具调用
-WS2812B.elf WS2812B.map: $(OBJS) $(USER_OBJS) E:\STM32\STM32CubeIDE(C8T6)\WS2812B\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "WS2812B.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"E:\STM32\STM32CubeIDE(C8T6)\WS2812B\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="WS2812B.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+ws2812b.elf ws2812b.map: $(OBJS) $(USER_OBJS) E:\STM32\STM32CubeIDE(C8T6)\ws2812b\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "ws2812b.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"E:\STM32\STM32CubeIDE(C8T6)\ws2812b\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ws2812b.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo '已结束构建目标： $@'
 	@echo ' '
 
@@ -71,14 +71,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo '已结束构建： $@'
 	@echo ' '
 
-WS2812B.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "WS2812B.list"
+ws2812b.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "ws2812b.list"
 	@echo '已结束构建： $@'
 	@echo ' '
 
 # 其他目标
 clean:
-	-$(RM) WS2812B.elf WS2812B.list WS2812B.map default.size.stdout
+	-$(RM) default.size.stdout ws2812b.elf ws2812b.list ws2812b.map
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)

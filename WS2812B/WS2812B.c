@@ -2,7 +2,7 @@
 #include "stdlib.h"
 #include <math.h>
 
-uint32_t WS2812B_BUFF[LED_NUM+1][24];
+uint32_t WS2812B_BUFF[LED_NUM + RESET_NUM * 2][24];
 
 
 
@@ -81,7 +81,7 @@ RGBColor hsv_to_rgb(HSVColor hsv) {
 uint32_t rgb_to_int(RGBColor rgb)
 {
 	uint32_t color = 0;
-	color = (rgb.r << 16) | (rgb.g << 16) | (rgb.b);
+	color = (rgb.r << 16) | (rgb.g << 8) | (rgb.b);
 	return color;
 }
 void PWM_WS2812B_Init()
@@ -91,7 +91,8 @@ void PWM_WS2812B_Init()
 void WS2812B_Buf_Clear()
 {
 	int i = 0,j = 0;
-	for (i = 0; i < LED_NUM+1; i++)
+	int a = LED_NUM + RESET_NUM * 2;
+	for (i = 0; i < a; i++)
 	{
 		for (j = 0; j < 24; j++)
 		{
@@ -101,21 +102,24 @@ void WS2812B_Buf_Clear()
 }
 void WS2812B_Reset(void)
 {
-	int i = 0;
-	for (i = 0; i < 24; i++)
+	int i = 0, j = 0;
+	for (j = 0; j < RESET_NUM; j++)
 	{
-		WS2812B_BUFF[LED_NUM][i] = 0;
+		for (i = 0; i < 24; i++)
+		{
+			WS2812B_BUFF[j][i] = 0;
+			WS2812B_BUFF[j+RESET_NUM+LED_NUM][i] = 0;
+		}
 	}
-
 }
 void PWM_WS2812B_Write_24Bits(uint16_t index,uint32_t RGB_Data)
 {
 	int i = 0;
 	for(i = 0; i < 8; i++)
 	{
-		WS2812B_BUFF[index][i] = (((RGB_Data << (8+i)) & 0x00800000))? (T1H):(T0H); 	//G
-		WS2812B_BUFF[index][i+8] = (((RGB_Data << (i)) & 0x00800000))? (T1H):(T0H);		//R
-		WS2812B_BUFF[index][i+16] = (((RGB_Data << (16+i)) & 0x00800000))? (T1H):(T0H);	//B
+		WS2812B_BUFF[index+RESET_NUM][i] = (((RGB_Data << (8+i)) & 0x00800000))? (T1H):(T0H); 	//G
+		WS2812B_BUFF[index+RESET_NUM][i+8] = (((RGB_Data << (i)) & 0x00800000))? (T1H):(T0H);		//R
+		WS2812B_BUFF[index+RESET_NUM][i+16] = (((RGB_Data << (16+i)) & 0x00800000))? (T1H):(T0H);	//B
 	}
 }
 void WS2812B_Set_Color(uint16_t head, uint16_t num ,uint32_t RGB_Data)
@@ -129,7 +133,7 @@ void WS2812B_Set_Color(uint16_t head, uint16_t num ,uint32_t RGB_Data)
 void PWM_WS2812B_Refresh()
 {
 	WS2812B_Reset();
-	HAL_TIM_PWM_Start_DMA(&htim2, TIM_CHANNEL_2, (uint32_t*)WS2812B_BUFF, (LED_NUM+1)*24);
+	HAL_TIM_PWM_Start_DMA(&htim2, TIM_CHANNEL_2, (uint32_t*)WS2812B_BUFF, (LED_NUM+RESET_NUM*2)*24);
 }
 void PWM_WS2812B_Red(uint16_t num)
 {
@@ -147,7 +151,7 @@ void PWM_WS2812B_Gradual(HSVColor* HSV)
 {
 	  Color_Gradual(HSV,0.3);
 	  WS2812B_Buf_Clear();
-	  WS2812B_Set_Color(0,60,rgb_to_int(hsv_to_rgb(*HSV)));
+	  WS2812B_Set_Color(0,LED_NUM,rgb_to_int(hsv_to_rgb(*HSV)));
 	  PWM_WS2812B_Refresh();
 //	  RGB_Show_64();
 	  HAL_Delay(20);
@@ -159,7 +163,7 @@ void PWM_WS2812B_Rainbow(HSVColor* HSV)
 	{
 	  for (j = 0; j < 24; j++)
 	  	{
-	  		WS2812B_BUFF[i][j] = WS2812B_BUFF[i-1][j];
+	  		WS2812B_BUFF[i+RESET_NUM][j] = WS2812B_BUFF[i-1+RESET_NUM][j];
 	  	}
 	}
 
@@ -167,18 +171,9 @@ void PWM_WS2812B_Rainbow(HSVColor* HSV)
 	  WS2812B_Set_Color(0,1,rgb_to_int(hsv_to_rgb(*HSV)));
 	  PWM_WS2812B_Refresh();
 //	  RGB_Show_64();
-	  HAL_Delay(20);
+	  HAL_Delay(40);
 }
-void RGB_Show_64(void)
-{
-	WS2812B_Buf_Clear();
-	WS2812B_Set_Color(0,60,rand()%0x1000000);
-//	WS2812B_Set_Color(0,60,0xffffff);
-//	WS2812B_Set_Color(30,15,0x00ff00);
-//	WS2812B_Set_Color(45,15,0x0000ff);
 
-	PWM_WS2812B_Refresh();
-}
 
 
 void Color_Gradual(HSVColor* Color,float step)
@@ -191,14 +186,7 @@ void Color_Gradual(HSVColor* Color,float step)
 	{
 		Color->h = fmod(Color->h, 360);
 	}
-//	if(Color->v < 1)
-//	{
-//		Color->v += 0.002;
-//	}
-//	else
-//	{
-//		Color->v = 0;
-//	}
+
 }
 
 

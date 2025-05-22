@@ -98,6 +98,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
 	  PWM_WS2812B_Rainbow(&HSV);
 //	  PWM_WS2812B_Gradual(&HSV);
     /* USER CODE END WHILE */
