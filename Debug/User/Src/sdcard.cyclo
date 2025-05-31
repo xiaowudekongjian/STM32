@@ -1,0 +1,4 @@
+../User/Src/sdcard.c:5:6:SD_WriteBlocks_DMA	3
+../User/Src/sdcard.c:16:6:SD_ReadBlocks_DMA	3
+../User/Src/sdcard.c:27:6:SD_DMA_WriteConfig	1
+../User/Src/sdcard.c:36:6:SD_DMA_ReadConfig	1
