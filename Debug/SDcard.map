@@ -3849,7 +3849,7 @@ LOAD D:/ST/STM32CubeIDE_1.16.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_macro   0x0001a159      0x1a8 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_sdmmc.o
  .debug_macro   0x0001a301      0x1ce ./User/Src/sdcard.o
 
-.debug_line     0x00000000     0xddae
+.debug_line     0x00000000     0xddb0
  .debug_line    0x00000000      0x6f8 ./Core/Src/dma.o
  .debug_line    0x000006f8      0x717 ./Core/Src/gpio.o
  .debug_line    0x00000e0f      0x97d ./Core/Src/main.o
@@ -3868,7 +3868,7 @@ LOAD D:/ST/STM32CubeIDE_1.16.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .debug_line    0x00008396     0x1e4b ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_sd.o
  .debug_line    0x0000a1e1     0x24c5 ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.o
  .debug_line    0x0000c6a6      0xf6a ./Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_ll_sdmmc.o
- .debug_line    0x0000d610      0x79e ./User/Src/sdcard.o
+ .debug_line    0x0000d610      0x7a0 ./User/Src/sdcard.o
 
 .debug_str      0x00000000    0x95c7b
  .debug_str     0x00000000    0x95c7b ./Core/Src/dma.o

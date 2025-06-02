@@ -39,6 +39,12 @@ void SD_ReadBlocks_DMA(SD_HandleTypeDef *hsd, DMA_HandleTypeDef *hdma, uint8_t *
 	}
 }
 
+int mai(uint8_t asd, uint16_t as)
+{
+	int a = 0;
+	return a;
+}
+
 /**
  * @brief 配置DMA为写入模式（内存到外设）
  * @param hsd SD卡句柄指针
