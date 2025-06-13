@@ -406,7 +406,7 @@ void ST7789v_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
     else
         lDistance = lDelta_y;
 
-    for (us = 0; us <= lDistance + 1; us++)
+    for (us = 0; us <= lDistance; us++)
     {
         ST7789V_SetPointPixel(usX_Current,usY_Current);
 

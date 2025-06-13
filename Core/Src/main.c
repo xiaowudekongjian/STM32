@@ -117,7 +117,7 @@ int main(void)
   ST7789V_DispString_EN(LINE(4),"Hello World!!!");
   ST7789V_SetFontColor(WHITE);
   // ST7789V_SetPointPixel(LCD_X_LENGTH/2,LCD_Y_LENGTH/2);
-  ST7789v_DrawLine(30,160,130,200);
+  ST7789v_DrawLine(30,160,239,200);
   HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_SET);
   HAL_Delay(300);
   HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_RESET);
