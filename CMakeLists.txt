@@ -50,6 +50,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
         ${CMAKE_SOURCE_DIR}/User/Src/ST7789V.c
         ${CMAKE_SOURCE_DIR}/User/Src/Font.c
+        ${CMAKE_SOURCE_DIR}/User/Src/Unicode_gbk.c
 )
 
 # Add include paths
