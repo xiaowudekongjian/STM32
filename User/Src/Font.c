@@ -1,6 +1,43 @@
 #include "Font.h"
+#include "fatfs.h"
+int GetGBKCode_from_sd ( uint8_t * pBuffer, uint16_t c)
+{
+    unsigned char High8bit,Low8bit;
+    unsigned int pos;
+    static uint8_t everRead = 0;
+    // c = 0xA4A1;
+    High8bit= c >> 8;     /* 取高8位数据 */
+    Low8bit= c & 0x00FF;  /* 取低8位数据 */
 
 
+    pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*FONT_CH_WIDTH*FONT_CH_HEIGHT/8;
+
+    /*第一次使用，挂载文件系统，初始化sd*/
+    if(everRead == 0)
+    {
+        // if(FATFS_LinkDriver(&SD_Driver, SDPath) == 0)
+        // {
+            retSD = f_mount(&SDFatFS,SDPath,1);
+            everRead = 1;
+        // }
+    }
+
+    retSD = f_open(&SDFile , GBKCODE_FILE_NAME, FA_OPEN_EXISTING | FA_READ);
+
+    if ( retSD == FR_OK )
+    {
+        f_lseek (&SDFile, pos);		//指针偏移
+
+        //16*16大小的汉字 其字模 占用16*16/8个字节
+        retSD = f_read( &SDFile, pBuffer, FONT_CH_WIDTH*FONT_CH_HEIGHT/8, &br );
+
+        f_close(&SDFile);
+
+        return 0;
+    }
+    else
+        return -1;
+}
 
 
 sFONT Font8x16 = {

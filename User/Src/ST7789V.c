@@ -1,5 +1,5 @@
 #include "ST7789V.h"
-
+#include "Unicode_gbk.h"
 
 
 uint16_t lcd_id = LCDID_UNKNOWN;                                //屏幕ID
@@ -429,6 +429,72 @@ void ST7789v_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 }
 
 
+
+void ST7789V_DrawRectangle(uint16_t usX_Start, uint16_t usY_Start, uint16_t usWidth, uint16_t usHeight, uint8_t ucFilled)
+{
+    if (ucFilled)
+    {
+        ST7789V_OpenWindow(usX_Start, usY_Start, usWidth, usHeight);
+        ST7789V_FillColor(usWidth*usHeight, CurrentTextColor);
+    }
+    else
+    {
+        ST7789v_DrawLine(usX_Start, usY_Start, usX_Start + usWidth, usY_Start);
+        ST7789v_DrawLine(usX_Start, usY_Start, usX_Start, usY_Start + usHeight);
+        ST7789v_DrawLine(usX_Start + usWidth, usY_Start, usX_Start + usWidth, usY_Start + usHeight);
+        ST7789v_DrawLine(usX_Start, usY_Start + usHeight, usX_Start + usWidth, usY_Start + usHeight);
+    }
+
+}
+
+void ST7789V_DrawCircle(uint16_t usX_Center, uint16_t usY_Center, uint16_t usRadius, uint8_t ucFilled)
+{
+    int16_t sCurrentX = 0, sCurrentY = (int16_t)usRadius;
+    int16_t sError;
+    sError = 3 - (usRadius << 1);
+    while (sCurrentX <= sCurrentY)
+    {
+        int16_t sCountY;
+
+
+        if ( ucFilled )
+            for ( sCountY = sCurrentX; sCountY <= sCurrentY; sCountY ++ )
+            {
+                ST7789V_SetPointPixel ( usX_Center + sCurrentX, usY_Center + sCountY );           //1研究对象
+                ST7789V_SetPointPixel ( usX_Center - sCurrentX, usY_Center + sCountY );           //2
+                ST7789V_SetPointPixel ( usX_Center - sCountY,   usY_Center + sCurrentX );           //3
+                ST7789V_SetPointPixel ( usX_Center - sCountY,   usY_Center - sCurrentX );           //4
+                ST7789V_SetPointPixel ( usX_Center - sCurrentX, usY_Center - sCountY );           //5
+                ST7789V_SetPointPixel ( usX_Center + sCurrentX, usY_Center - sCountY );           //6
+                ST7789V_SetPointPixel ( usX_Center + sCountY,   usY_Center - sCurrentX );           //7
+                ST7789V_SetPointPixel ( usX_Center + sCountY,   usY_Center + sCurrentX );           //0
+            }
+
+        else
+        {
+            ST7789V_SetPointPixel ( usX_Center + sCurrentX, usY_Center + sCurrentY );             //1
+            ST7789V_SetPointPixel ( usX_Center - sCurrentX, usY_Center + sCurrentY );             //2
+            ST7789V_SetPointPixel ( usX_Center - sCurrentY, usY_Center + sCurrentX );             //3
+            ST7789V_SetPointPixel ( usX_Center - sCurrentY, usY_Center - sCurrentX );             //4
+            ST7789V_SetPointPixel ( usX_Center - sCurrentX, usY_Center - sCurrentY );             //5
+            ST7789V_SetPointPixel ( usX_Center + sCurrentX, usY_Center - sCurrentY );             //6
+            ST7789V_SetPointPixel ( usX_Center + sCurrentY, usY_Center - sCurrentX );             //7
+            ST7789V_SetPointPixel ( usX_Center + sCurrentY, usY_Center + sCurrentX );             //0
+        }
+        sCurrentX++;
+        if ( sError < 0 )
+        {
+            sError += 4 * sCurrentX + 6;
+        }
+        else
+        {
+            sError += 10 + 4 * ( sCurrentX - sCurrentY );
+            sCurrentY --;
+        }
+
+    }
+}
+
 /**
  * 区块颜色清除
  * @param usX X方向起始点像素
@@ -528,6 +594,34 @@ void ST7789V_DispChar_EN(const uint16_t usX, const uint16_t usY, const char chCh
     }
 }
 
+void ST7789V_DispChar_ZH(uint16_t usX, uint16_t usY, uint16_t usChar)
+{
+    uint8_t rowCount,bitCount;
+    uint8_t ucBuffer[FONT_CH_HEIGHT*FONT_CH_WIDTH/8];
+    uint16_t usTemp;
+
+    ST7789V_OpenWindow(usX,usY,FONT_CH_WIDTH,FONT_CH_HEIGHT);
+    ST7789V_WriteCmd(CMD_SetPixel);
+    GetGBKCode(ucBuffer,usChar);
+    for ( rowCount = 0; rowCount < FONT_CH_HEIGHT; rowCount++ )
+    {
+        /* 取出两个字节的数据，在lcd上即是一个汉字的一行 */
+        usTemp = ucBuffer [ rowCount * 2 ];
+        usTemp = ( usTemp << 8 );
+        usTemp |= ucBuffer [ rowCount * 2 + 1 ];
+
+        for ( bitCount = 0; bitCount < FONT_CH_WIDTH; bitCount ++ )
+        {
+            if ( usTemp & ( 0x8000 >> bitCount ) )  //高位在前
+                ST7789V_WriteData ( CurrentTextColor );
+            else
+                ST7789V_WriteData ( CurrentBackColor );
+        }
+    }
+}
+
+
+
 /**
  * 显示英文字符串
  * @param line 行号
@@ -569,12 +663,64 @@ void ST7789V_DispString_EN(  uint16_t line,  char *pStr )
 }
 
 
+void ST7789V_DispString_CH (uint16_t usX , uint16_t usY, char * pStr )
+{
+    uint16_t usCh;
+    uint32_t uc;
+    uint16_t unicide;
+    while( * pStr != '\0' )
+    {
+        if ( ( usX - ST7789V_DISWINDOW_STAR_X + FONT_CH_WIDTH ) > LCD_X_LENGTH )
+        {
+            usX = ST7789V_DISWINDOW_STAR_X;
+            usY += FONT_CH_HEIGHT;
+        }
 
+        if ( ( usY - ST7789V_DISWINDOW_STAR_Y + FONT_CH_HEIGHT ) > LCD_Y_LENGTH )
+        {
+            usX = ST7789V_DISWINDOW_STAR_X;
+            usY = ST7789V_DISWINDOW_STAR_Y;
+        }
+#ifdef CODE_FORMAT
+        uc = (*(uint8_t *)pStr<<16) | (*(uint8_t *)(pStr+1)<<8)  |(*(uint8_t *)(pStr+2));
+        unicide = (uc & 0x0F0000)>>4 | (uc & 0x003F00)>>2 |(uc & 0x00003F);
+        usCh = UnicodeToGBK(unicide);
+#else
+
+         usCh = * ( uint16_t * ) pStr;
+         usCh = ( usCh << 8 ) + ( usCh >> 8 );
+#endif
+        ST7789V_DispChar_ZH ( usX, usY, usCh );
+
+        usX += FONT_CH_WIDTH;
+
+        pStr += 3;           //一个汉字两个字节
+
+    }
+
+}
 
 void ST7789V_ClearLine(const uint16_t Line)
 {
     ST7789V_ClearScreen(0,Line, LCD_X_LENGTH, ST7789V_GetFont()->height);
 }
 
+// 将Unicode码点转换为GBK编码
+uint16_t UnicodeToGBK(uint16_t unicode)
+{
+    uint16_t gbkcode = 0;
+    uint16_t i = 0;
 
+
+    for ( i = 0 ; i < MAX_UNI_INDEX ; i++ )
+    {
+        if (GB_TO_UNI[i][0] == unicode)
+        {
+            gbkcode = GB_TO_UNI[i][1];
+            return  gbkcode;
+        }
+    }
+
+    return  0XA0A1;
+}
 

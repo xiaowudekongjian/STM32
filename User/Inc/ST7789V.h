@@ -53,9 +53,11 @@ uint16_t                    ST7789V_ReadID                (void);
 void                        ST7789V_GramScan              (uint8_t ucOption);
 void                        ST7789V_OpenWindow            (uint16_t px, uint16_t py, uint16_t width, uint16_t height);
 static __inline void        ST7789V_FillColor             (uint32_t ulAmout_Point,uint16_t pColor);
-void                        ST7789V_ClearScreen           ( uint16_t usX, uint16_t usY, uint16_t usWidth, uint16_t usHeight);
+void                        ST7789V_ClearScreen           (uint16_t usX, uint16_t usY, uint16_t usWidth, uint16_t usHeight);
 void                        ST7789V_SetPointPixel         (uint16_t px, uint16_t py);
 void                        ST7789v_DrawLine              (uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2);
+void                        ST7789V_DrawRectangle         (uint16_t usX_Start, uint16_t usY_Start, uint16_t usWidth, uint16_t usHeight, uint8_t ucFilled);
+void                        ST7789V_DrawCircle            (uint16_t usX_Center, uint16_t usY_Center, uint16_t usRadius, uint8_t ucFilled);
 
 void                        ST7789V_SetColor              (const uint16_t fontcolor, const uint16_t backcolor);
 void                        ST7789V_GetColor              (uint16_t *fontcolor, uint16_t *backcolor);
@@ -64,9 +66,11 @@ void                        ST7789V_SetBackColor          (const uint16_t backco
 void                        ST7789V_SetFont               (sFONT *font);
 sFONT                       *ST7789V_GetFont              (void);
 void                        ST7789V_DispChar_EN           (const uint16_t usX, const uint16_t usY, const char chChar);
+void                        ST7789V_DispChar_ZH           (uint16_t usX, uint16_t usY, uint16_t usChar);
 void                        ST7789V_DispString_EN         (uint16_t line,  char *pStr );
+void                        ST7789V_DispString_CH         (uint16_t usX , uint16_t usY, char * pStr );
 void                        ST7789V_ClearLine             (const uint16_t Line);
-
+uint16_t                    UnicodeToGBK                  (uint16_t unicode);
 
 
 

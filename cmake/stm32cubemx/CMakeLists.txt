@@ -71,6 +71,7 @@ set(FatFs_Src
     ${CMAKE_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/ff.c
     ${CMAKE_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/ff_gen_drv.c
     ${CMAKE_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/option/syscall.c
+    ${CMAKE_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/option/cc936.c
     ${CMAKE_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/drivers/sd_diskio.c
 )
 

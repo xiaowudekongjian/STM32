@@ -28,7 +28,7 @@
 #include "sd_diskio.h" /* defines SD_Driver as external */
 
 /* USER CODE BEGIN Includes */
-
+static UINT br;
 /* USER CODE END Includes */
 
 extern uint8_t retSD; /* Return value for SD */

@@ -106,7 +106,7 @@ int main(void)
   sprintf(tx_buffer,"Ready!\r\n");
   HAL_UART_Transmit_DMA(&huart1,tx_buffer,strlen(tx_buffer));
 
-  ST7789V_SetFont(&Font16x24);
+  ST7789V_SetFont(&Font8x16);
   ST7789V_DispString_EN(LINE(0),"TEST");
   ST7789V_DispString_EN(LINE(1),"Hello World!");
   ST7789V_SetFontColor(RED);
@@ -114,10 +114,19 @@ int main(void)
   ST7789V_SetFontColor(YELLOW);
   ST7789V_DispString_EN(LINE(3),"Hello World!!!");
   ST7789V_SetFontColor(GREEN);
-  ST7789V_DispString_EN(LINE(4),"Hello World!!!");
+  // ST7789V_DispString_EN(LINE(4),"Hello World!!!");
   ST7789V_SetFontColor(WHITE);
   // ST7789V_SetPointPixel(LCD_X_LENGTH/2,LCD_Y_LENGTH/2);
-  ST7789v_DrawLine(30,160,239,200);
+  ST7789v_DrawLine(30,160,139,200);
+  ST7789V_DrawRectangle(80, 230, 50, 50,1);
+  ST7789V_SetFontColor(GREEN);
+  ST7789V_DrawRectangle(55, 215, 50, 50,1);
+  ST7789V_SetFontColor(YELLOW);
+  ST7789V_DrawRectangle(30, 200, 50, 50,1);
+  ST7789V_DrawCircle(200, 280, 20, 1);
+  ST7789V_SetFontColor(WHITE);
+  ST7789V_DispString_CH(0,LINEY(4),"你好世界");
+  ST7789V_DispString_CH(0,LINEY(5),"自强不息");
   HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_SET);
   HAL_Delay(300);
   HAL_GPIO_WritePin(BUZZER_GPIO_Port, BUZZER_Pin, GPIO_PIN_RESET);
