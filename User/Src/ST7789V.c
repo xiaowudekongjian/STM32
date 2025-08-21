@@ -699,7 +699,7 @@ void ST7789V_DispString_CH (uint16_t usX , uint16_t usY, char * pStr )
 #endif
         ST7789V_DispChar_ZH ( usX, usY, usCh );                                       //显示相应汉字
 
-        usX += FONT_CH_WIDTH;
+        usX += FONT_CH_WIDTH;                                                               //更新光标位置
 
 
     }
