@@ -7,8 +7,8 @@
 /**
  * CODE_FORMAT 为1表示UTF-8,0表示GBK2312
  */
-#define CODE_FORMAT 1
-
+#define CODE_FORMAT_UTF8
+// #define CODE_FORMAT_GB2312
 
 #define FONT_CH_HEIGHT 16
 #define FONT_CH_WIDTH 16

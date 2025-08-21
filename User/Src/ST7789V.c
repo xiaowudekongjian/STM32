@@ -681,20 +681,21 @@ void ST7789V_DispString_CH (uint16_t usX , uint16_t usY, char * pStr )
             usX = ST7789V_DISWINDOW_STAR_X;
             usY = ST7789V_DISWINDOW_STAR_Y;
         }
-#ifdef CODE_FORMAT
-        uc = (*(uint8_t *)pStr<<16) | (*(uint8_t *)(pStr+1)<<8)  |(*(uint8_t *)(pStr+2));
-        unicide = (uc & 0x0F0000)>>4 | (uc & 0x003F00)>>2 |(uc & 0x00003F);
-        usCh = UnicodeToGBK(unicide);
+#ifdef CODE_FORMAT_UTF8
+        //UTF-8转unicode转gb2312
+        uc = (*(uint8_t *)pStr<<16) | (*(uint8_t *)(pStr+1)<<8) | (*(uint8_t *)(pStr+2));   //小端模式转大端模式
+        unicide = (uc & 0x0F0000)>>4 | (uc & 0x003F00)>>2 |(uc & 0x00003F);                 //UTF-8转unicode
+        usCh = UnicodeToGBK(unicide);                                                       //unicode转gb2312
+        pStr += 3;                                                                          //UTF-8汉字占3个字节（待完善）
 #else
-
-         usCh = * ( uint16_t * ) pStr;
-         usCh = ( usCh << 8 ) + ( usCh >> 8 );
+        usCh = * ( uint16_t * ) pStr;
+        usCh = ( usCh << 8 ) + ( usCh >> 8 );                                               //小端模式转大端模式
+        pStr += 2;                                                                          //gb2312汉字占2个字节
 #endif
         ST7789V_DispChar_ZH ( usX, usY, usCh );
 
         usX += FONT_CH_WIDTH;
 
-        pStr += 3;           //一个汉字两个字节
 
     }
 
