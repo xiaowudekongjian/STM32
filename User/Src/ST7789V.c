@@ -662,7 +662,12 @@ void ST7789V_DispString_EN(  uint16_t line,  char *pStr )
 
 }
 
-
+/**
+ * 显示汉字（兼容UTF-8和GB2312）
+ * @param usX x轴坐标位置
+ * @param usY y轴坐标位置
+ * @param pStr 显示文字指针
+ */
 void ST7789V_DispString_CH (uint16_t usX , uint16_t usY, char * pStr )
 {
     uint16_t usCh;
