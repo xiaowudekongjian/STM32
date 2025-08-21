@@ -692,7 +692,7 @@ void ST7789V_DispString_CH (uint16_t usX , uint16_t usY, char * pStr )
         usCh = ( usCh << 8 ) + ( usCh >> 8 );                                               //小端模式转大端模式
         pStr += 2;                                                                          //gb2312汉字占2个字节
 #endif
-        ST7789V_DispChar_ZH ( usX, usY, usCh );
+        ST7789V_DispChar_ZH ( usX, usY, usCh );                                       //显示相应汉字
 
         usX += FONT_CH_WIDTH;
 
